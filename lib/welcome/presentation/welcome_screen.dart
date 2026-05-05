@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_manager_app/home/presentation/home_screen.dart';
 import 'package:task_manager_app/welcome/widgets/get_started_button.dart';
 import 'package:task_manager_app/welcome/widgets/name_text_field.dart';
@@ -33,15 +34,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                SizedBox(height: height * 0.09),
+                SizedBox(height: height * 0.08),
 
                 /// Logo + App Name
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      height: 95,
-                      width: 95,
+                      height: 85,
+                      width: 85,
                       child: Image.asset(
                         isDark
                             ? 'assets/images/imgi_129_default.png'
@@ -52,7 +53,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     Text(
                       'TickIt',
                       style: TextStyle(
-                        fontSize: 35,
+                        fontSize: 32,
                         fontWeight: FontWeight.bold,
                         color: isDark ? Colors.white : Colors.black,
                       ),
@@ -66,13 +67,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   'Welcome to TickIt',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 23,
+                    fontWeight: FontWeight.w600,
                     color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
-
-                SizedBox(height: height * 0.01),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -80,26 +79,30 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     'Your personal task manager app to boost productivity and stay organized.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontWeight: FontWeight.w300,
+                      fontSize: 12,
                       color: isDark ? Colors.white54 : Colors.black54,
                     ),
                   ),
                 ),
 
-                SizedBox(height: height * 0.04),
+                SizedBox(height: height * 0.08),
 
                 Image.asset('assets/images/working.png', fit: BoxFit.contain),
 
-                SizedBox(height: height * 0.17),
+                SizedBox(height: height * 0.08),
 
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Enter your name to get started',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: isDark ? Colors.white : Colors.black87,
+                Padding(
+                  padding: const EdgeInsets.only(left: 2.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Enter your name to get started',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
                     ),
                   ),
                 ),
@@ -111,11 +114,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 const SizedBox(height: 20),
 
                 GetStartedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.push(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate() ?? false) {
+                      final pref = await SharedPreferences.getInstance();
+                      await pref.setString('username', _controller.value.text);
+                      String? username = pref.getString('username');
+
+                      Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (_) => const HomeScreen()),
+                        MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return HomeScreen(username: _controller.value.text);
+                          },
+                        ),
                       );
                     }
                   },
