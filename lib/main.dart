@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:task_manager_app/home/presentation/home_screen.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:task_manager_app/fearures/tasks/data/models/task_model.dart';
+import 'package:task_manager_app/fearures/tasks/presentation/screens/home_screen.dart';
 import 'package:task_manager_app/utils/theme/app_theme.dart';
-import 'package:task_manager_app/welcome/presentation/welcome_screen.dart';
+import 'package:task_manager_app/fearures/welcome/presentation/welcome_screen.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-  String? username = prefs.getString('username');
 
-  runApp(MyApp(username: username));
+  await Hive.initFlutter();
+  var box = await Hive.openBox<TaskModel>('tasks');
+  Hive.registerAdapter(TaskModelAdapter());
+
+await Hive.openBox<String>('appBox');
+
+TaskModel? username = box.get('username');
+  runApp(MyApp(username: username?.toString()));
 }
 
 class MyApp extends StatelessWidget {
@@ -23,6 +30,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       debugShowCheckedModeBanner: false,
+
       home: username == null
           ? WelcomeScreen()
           : HomeScreen(username: username!),

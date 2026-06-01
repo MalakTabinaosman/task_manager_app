@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:task_manager_app/home/presentation/home_screen.dart';
-import 'package:task_manager_app/welcome/widgets/get_started_button.dart';
-import 'package:task_manager_app/welcome/widgets/name_text_field.dart';
+import 'package:hive/hive.dart';
+import 'package:task_manager_app/fearures/tasks/presentation/screens/home_screen.dart';
+import 'package:task_manager_app/fearures/welcome/widgets/get_started_button.dart';
+import 'package:task_manager_app/fearures/welcome/widgets/name_text_field.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -115,10 +115,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
                 GetStartedButton(
                   onPressed: () async {
-                    if (_formKey.currentState!.validate() ?? false) {
-                      final pref = await SharedPreferences.getInstance();
-                      await pref.setString('username', _controller.value.text);
-                      String? username = pref.getString('username');
+                    if (_formKey.currentState!.validate()) {
+                      final box = await Hive.openBox('appBox');
+                      await box.put('username', _controller.value.text);
+                      String? username = box.get('username');
 
                       Navigator.pushReplacement(
                         context,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:task_manager_app/home/presentation/add_task_screen/add_task_screen.dart';
+import 'package:task_manager_app/fearures/tasks/presentation/screens/add_task_screen.dart';
 import 'package:task_manager_app/utils/constants/colors.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -30,22 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-      floatingActionButton: FilledButton.icon(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddTaskScreen()),
-          );
-        },
-        label: Text("Add Task"),
-        style: ButtonStyle(
-          foregroundColor: MaterialStatePropertyAll(AppColors.darkTextPrimary),
-          backgroundColor: MaterialStatePropertyAll(
-            isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
-          ),
-        ),
-        icon: Icon(Icons.add),
-      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
